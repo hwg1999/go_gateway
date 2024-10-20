@@ -1,9 +1,14 @@
 package router
 
 import (
+	"log"
+
 	"github.com/e421083458/golang_common/lib"
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/hwg1999/go_gateway/backend/controller"
 	"github.com/hwg1999/go_gateway/backend/docs"
+	"github.com/hwg1999/go_gateway/backend/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -70,6 +75,31 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		})
 	})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	adminLoginRouter := router.Group("/admin_login")
+	store, err := sessions.NewRedisStore(10, "tcp", "localhost:6379", "", []byte("secret"))
+	if err != nil {
+		log.Fatalf("sessions.NewRedisStore err:%v", err)
+	}
+	adminLoginRouter.Use(
+		sessions.Sessions("mysession", store),
+		middleware.RecoveryMiddleware(),
+		middleware.RequestLog(),
+		middleware.TranslationMiddleware())
+	{
+		controller.AdminLoginRegister(adminLoginRouter)
+	}
+
+	adminRouter := router.Group("/admin")
+	adminRouter.Use(
+		sessions.Sessions("mysession", store),
+		middleware.RecoveryMiddleware(),
+		middleware.RequestLog(),
+		middleware.SessionAuthMiddleware(),
+		middleware.TranslationMiddleware())
+	{
+		controller.AdminRegister(adminRouter)
+	}
 
 	return router
 }

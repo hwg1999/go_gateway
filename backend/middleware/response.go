@@ -3,14 +3,16 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/e421083458/golang_common/lib"
-	"github.com/gin-gonic/gin"
+
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/hwg1999/go_gateway/backend/golang_common/lib"
 )
 
 type ResponseCode int
 
-//1000以下为通用码，1000以上为用户自定义码
+// 1000以下为通用码，1000以上为用户自定义码
 const (
 	SuccessCode ResponseCode = iota
 	UndefErrorCode

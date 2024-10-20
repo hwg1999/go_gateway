@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/e421083458/golang_common/lib"
 	"github.com/gin-gonic/gin"
+	"github.com/hwg1999/go_gateway/backend/golang_common/lib"
 )
 
 func IPAuthMiddleware() gin.HandlerFunc {
