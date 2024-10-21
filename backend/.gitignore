@@ -1,5 +1,4 @@
 *.log
 .vscode
 logs
-docs/swagger.json
-docs/swagger.yaml
+docs/

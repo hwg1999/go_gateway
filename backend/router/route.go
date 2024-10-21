@@ -3,11 +3,11 @@ package router
 import (
 	"log"
 
-	"github.com/e421083458/golang_common/lib"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/hwg1999/go_gateway/backend/controller"
 	"github.com/hwg1999/go_gateway/backend/docs"
+	"github.com/hwg1999/go_gateway/backend/golang_common/lib"
 	"github.com/hwg1999/go_gateway/backend/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -99,6 +99,17 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		middleware.TranslationMiddleware())
 	{
 		controller.AdminRegister(adminRouter)
+	}
+
+	serviceRouter := router.Group("/service")
+	serviceRouter.Use(
+		sessions.Sessions("mysession", store),
+		middleware.RecoveryMiddleware(),
+		middleware.RequestLog(),
+		middleware.SessionAuthMiddleware(),
+		middleware.TranslationMiddleware())
+	{
+		controller.ServiceRegister(serviceRouter)
 	}
 
 	return router
